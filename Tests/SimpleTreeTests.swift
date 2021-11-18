@@ -31,10 +31,10 @@ class SimpleTreeTests: XCTestCase {
    
     public func testGetParentValues() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let baz2 = foo.addChild(forValue: "bar2")
-        let baz = bar.addChild(forValue: "baz")
-        let blah = bar.addChild(forValue: "blah")
+        let bar = foo.addChild(for: "bar")
+        let baz2 = foo.addChild(for: "bar2")
+        let baz = bar.addChild(for: "baz")
+        let blah = bar.addChild(for: "blah")
 
         XCTAssertEqual(blah.getParentValues(), ["bar", "foo"])
         XCTAssertEqual(blah.getParentValues(maxDepth: 0), [])
@@ -57,10 +57,10 @@ class SimpleTreeTests: XCTestCase {
     
     public func testMakeParentIterator() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let baz2 = foo.addChild(forValue: "baz2")
-        let baz = bar.addChild(forValue: "baz")
-        let blah = bar.addChild(forValue: "blah")
+        let bar = foo.addChild(for: "bar")
+        let baz2 = foo.addChild(for: "baz2")
+        let baz = bar.addChild(for: "baz")
+        let blah = bar.addChild(for: "blah")
 
         let blahIt = blah.makeParentIterator()
         XCTAssertEqual("bar", blahIt.next()?.value)
@@ -86,12 +86,12 @@ class SimpleTreeTests: XCTestCase {
 
     public func testMakeChildIterator() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let baz2 = foo.addChild(forValue: "baz2")
-        let bleep = baz2.addChild(forValue: "bleep")
-        let blort = bleep.addChild(forValue: "blort")
-        let baz = bar.addChild(forValue: "baz")
-        let blah = bar.addChild(forValue: "blah")
+        let bar = foo.addChild(for: "bar")
+        let baz2 = foo.addChild(for: "baz2")
+        let bleep = baz2.addChild(for: "bleep")
+        let blort = bleep.addChild(for: "blort")
+        let baz = bar.addChild(for: "baz")
+        let blah = bar.addChild(for: "blah")
 
         let blahIt = blah.makeChildIterator()
         XCTAssertNil(blahIt.next()?.value)
@@ -128,18 +128,18 @@ class SimpleTreeTests: XCTestCase {
 
     public func testGetFirst() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let baz = bar.addChild(forValue: "baz")
+        let bar = foo.addChild(for: "bar")
+        let baz = bar.addChild(for: "baz")
 
-        XCTAssertNil(foo.getFirstChild(forValue: "foo"))
-        XCTAssertEqual(foo.getFirstChild(forValue: "bar"), bar)
-        XCTAssertEqual(foo.getFirstChild(forValue: "baz"), baz)
-        XCTAssertNil(foo.getFirstChild(forValue: "blah"))
+        XCTAssertNil(foo.getFirstChild(for: "foo"))
+        XCTAssertEqual(foo.getFirstChild(for: "bar"), bar)
+        XCTAssertEqual(foo.getFirstChild(for: "baz"), baz)
+        XCTAssertNil(foo.getFirstChild(for: "blah"))
 
-        XCTAssertEqual(foo.getFirst(forValue: "foo"), foo)
-        XCTAssertEqual(foo.getFirst(forValue: "bar"), bar)
-        XCTAssertEqual(foo.getFirst(forValue: "baz"), baz)
-        XCTAssertNil(foo.getFirst(forValue: "blah"))
+        XCTAssertEqual(foo.getFirst(for: "foo"), foo)
+        XCTAssertEqual(foo.getFirst(for: "bar"), bar)
+        XCTAssertEqual(foo.getFirst(for: "baz"), baz)
+        XCTAssertNil(foo.getFirst(for: "blah"))
     }
 
     public func testGetChildValuesNone() throws {
@@ -149,25 +149,25 @@ class SimpleTreeTests: XCTestCase {
     
     public func testGetChildValuesOneChild() throws {
         let foo = SimpleTree<String>(value: "foo")
-        _ = foo.addChild(forValue: "bar")
+        _ = foo.addChild(for: "bar")
         XCTAssertEqual(foo.getChildValues(), ["bar"])
     }
     
     public func testGetChildValuesOneGrandChild() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        _ = bar.addChild(forValue: "baz")
+        let bar = foo.addChild(for: "bar")
+        _ = bar.addChild(for: "baz")
         XCTAssertEqual(foo.getChildValues(), ["bar", "baz"])
     }
 
     public func testGetChildValues() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let bar2 = foo.addChild(forValue: "bar2")
-        _ = bar2.addChild(forValue: "bar3")
-        let baz = bar.addChild(forValue: "baz")
-        let blah = bar.addChild(forValue: "blah")
-        _ = blah.addChild(forValue: "bleh")
+        let bar = foo.addChild(for: "bar")
+        let bar2 = foo.addChild(for: "bar2")
+        _ = bar2.addChild(for: "bar3")
+        let baz = bar.addChild(for: "baz")
+        let blah = bar.addChild(for: "blah")
+        _ = blah.addChild(for: "bleh")
 
         XCTAssertEqual(foo.getChildValues().sorted(), ["bar", "bar2", "bar3", "baz", "blah", "bleh"].sorted())
         XCTAssertEqual(bar.getChildValues().sorted(), ["baz", "blah", "bleh"].sorted())
@@ -184,27 +184,27 @@ class SimpleTreeTests: XCTestCase {
     
     public func testGetAllChildValues() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let bar2 = foo.addChild(forValue: "bar2")
-        _ = bar2.addChild(forValue: "bar3")
-        let baz = bar.addChild(forValue: "baz")
-        let blah = bar.addChild(forValue: "blah")
-        _ = blah.addChild(forValue: "bleh")
+        let bar = foo.addChild(for: "bar")
+        let bar2 = foo.addChild(for: "bar2")
+        _ = bar2.addChild(for: "bar3")
+        let baz = bar.addChild(for: "baz")
+        let blah = bar.addChild(for: "blah")
+        _ = blah.addChild(for: "bleh")
 
-        XCTAssertEqual(foo.getAllChildValues().sorted(), ["bar", "bar2", "bar3", "baz", "blah", "bleh"].sorted())
-        XCTAssertEqual(bar.getAllChildValues().sorted(), ["baz", "blah", "bleh"].sorted())
-        XCTAssertEqual(bar2.getAllChildValues(), ["bar3"])
-        XCTAssertEqual(baz.getAllChildValues(), [])
-        XCTAssertEqual(blah.getAllChildValues(), ["bleh"])
+        XCTAssertEqual(foo.getChildValues().sorted(), ["bar", "bar2", "bar3", "baz", "blah", "bleh"].sorted())
+        XCTAssertEqual(bar.getChildValues().sorted(), ["baz", "blah", "bleh"].sorted())
+        XCTAssertEqual(bar2.getChildValues(), ["bar3"])
+        XCTAssertEqual(baz.getChildValues(), [])
+        XCTAssertEqual(blah.getChildValues(), ["bleh"])
     }
 
     public func testGetChildValuesExclude() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let bar2 = foo.addChild(forValue: "bar2")
-        _ = bar2.addChild(forValue: "bar3")
-        _ = bar.addChild(forValue: "baz")
-        _ = bar.addChild(forValue: "blah")
+        let bar = foo.addChild(for: "bar")
+        let bar2 = foo.addChild(for: "bar2")
+        _ = bar2.addChild(for: "bar3")
+        _ = bar.addChild(for: "baz")
+        _ = bar.addChild(for: "blah")
 
         XCTAssertEqual(foo.getChildValues(excludeValues: ["bar"]).sorted(), ["bar2", "bar3"].sorted())
         XCTAssertEqual(foo.getChildValues(excludeValues: ["bar2"]).sorted(), ["bar", "baz", "blah"].sorted())
@@ -214,23 +214,23 @@ class SimpleTreeTests: XCTestCase {
     
     public func testGetChildValues2Exclude() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let bar2 = foo.addChild(forValue: "bar2")
-        _ = bar2.addChild(forValue: "bar3")
-        _ = bar.addChild(forValue: "baz")
-        _ = bar.addChild(forValue: "blah")
+        let bar = foo.addChild(for: "bar")
+        let bar2 = foo.addChild(for: "bar2")
+        _ = bar2.addChild(for: "bar3")
+        _ = bar.addChild(for: "baz")
+        _ = bar.addChild(for: "blah")
 
         //XCTAssertEqual(foo.getChildValues2(excludeValues: ["bar"]), [])
-        XCTAssertEqual(foo.getAllChildValues(excludeValues: ["bar2"]), ["bar", "baz", "blah"])
-        XCTAssertEqual(foo.getAllChildValues(excludeValues: ["blah"]), ["bar", "bar2", "baz", "bar3"])
-        XCTAssertEqual(bar.getAllChildValues(excludeValues: ["foo"]), ["baz", "blah"])
-        XCTAssertEqual(bar.getAllChildValues(excludeValues: ["blah"]), ["baz"])
+        XCTAssertEqual(foo.getChildValues(excludeValues: ["bar2"]), ["bar", "baz", "blah"])
+        XCTAssertEqual(foo.getChildValues(excludeValues: ["blah"]), ["bar", "bar2", "baz", "bar3"])
+        XCTAssertEqual(bar.getChildValues(excludeValues: ["foo"]), ["baz", "blah"])
+        XCTAssertEqual(bar.getChildValues(excludeValues: ["blah"]), ["baz"])
     }
 
     public func testGetAllValues() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        let baz = bar.addChild(forValue: "baz")
+        let bar = foo.addChild(for: "bar")
+        let baz = bar.addChild(for: "baz")
 
         XCTAssertTrue(foo.getAllValues().contains("foo"))
         XCTAssertTrue(foo.getAllValues().contains("bar"))
@@ -250,7 +250,7 @@ class SimpleTreeTests: XCTestCase {
     
     public func testGetAllValuesExcludeRoot() throws {
         let foo = SimpleTree<String>(value: "foo")
-        _ = foo.addChild(forValue: "bar")
+        _ = foo.addChild(for: "bar")
 
         let actual = foo.getAllValues(excludeValues: Set(["foo"]))
         XCTAssertFalse(actual.contains("foo"))
@@ -259,8 +259,8 @@ class SimpleTreeTests: XCTestCase {
     
     public func testGetAllValuesExcludeChild() throws {
         let foo = SimpleTree<String>(value: "foo")
-        let bar = foo.addChild(forValue: "bar")
-        _ = bar.addChild(forValue: "baz")
+        let bar = foo.addChild(for: "bar")
+        _ = bar.addChild(for: "baz")
 
         let actual = foo.getAllValues(excludeValues: Set(["bar"]))
         XCTAssertTrue(actual.contains("foo"))
@@ -270,11 +270,11 @@ class SimpleTreeTests: XCTestCase {
     public func testGetAllValuesExcludeSibling() throws {
         let foo = SimpleTree<String>(value: "foo")
         
-        let blah = foo.addChild(forValue: "blah")
-        _ = blah.addChild(forValue: "bleh")
+        let blah = foo.addChild(for: "blah")
+        _ = blah.addChild(for: "bleh")
         
-        let bar = foo.addChild(forValue: "bar")
-        _ = bar.addChild(forValue: "baz")
+        let bar = foo.addChild(for: "bar")
+        _ = bar.addChild(for: "baz")
 
         let actual = foo.getAllValues(excludeValues: Set(["blah"]))
         XCTAssertTrue(actual.contains("foo"))

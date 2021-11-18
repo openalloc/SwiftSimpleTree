@@ -37,7 +37,7 @@ public class SimpleTree<T> where T: Equatable & Hashable {
 extension SimpleTree {
     
     /// Append a new node (containing the specified value) to our list of children
-    public func addChild(forValue value: T) -> Node {
+    public func addChild(for value: T) -> Node {
         let nuChild = Node(value: value)
         children.append(nuChild)
         nuChild.parent = self
@@ -74,10 +74,10 @@ extension SimpleTree {
         getParents(maxDepth: 1, excludeValues: excludeValues).first
     }
     
-    /// Fetch child nodes.
+    /// Fetch the child nodes of the node.
     /// Optional list of values for children to be excluded, along with their progeny.
     /// Traversal is depth-first, with optional limit.
-    public func getChildren(maxDepth: Int = Int.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
+    public func getChildren(maxDepth: Int, excludeValues: ValueSet = ValueSet()) -> [Node] {
         guard maxDepth > 0 else { return [] }
         var nodes = [Node]()
         for child in children {
@@ -87,6 +87,28 @@ extension SimpleTree {
                 nodes.append(contentsOf: child.getChildren(maxDepth: maxDepth - 1, excludeValues: excludeValues))
             }
         }
+        return nodes
+    }
+    
+    /// Fetch the child nodes of the node.
+    /// Optional list of values for children to be excluded, along with their progeny.
+    /// Traversal is breadth-first.
+    public func getChildren(excludeValues: ValueSet = ValueSet()) -> [Node] {
+        var nodes = [Node]()
+        let iter = self.makeChildIterator(excludeValues: excludeValues)
+        while let node = iter.next() {
+            nodes.append(node)
+        }
+        return nodes
+    }
+    
+    /// Fetch the node and its child nodes.
+    /// Optional list of values for children to be excluded, along with their progeny.
+    /// Traversal is breadth-first.
+    public func getAll(excludeValues: ValueSet = ValueSet()) -> [Node] {
+        guard !excludeValues.contains(self.value) else { return [] }
+        var nodes: [Node] = [self]
+        nodes.append(contentsOf: getChildren(excludeValues: excludeValues))
         return nodes
     }
 }
@@ -100,9 +122,9 @@ extension SimpleTree {
         var node: Node? = self.parent
         return AnyIterator { () -> Node? in
             guard let _node = node else { return nil }
-            let currentNode = _node
+            let nextNode = _node
             node = _node.parent        // okay if nil
-            return currentNode
+            return nextNode
         }
     }
     
@@ -144,13 +166,13 @@ extension SimpleTree {
     }
 }
  
-// MARK: - Iterative Node Search
+// MARK: - Node Search
 
 extension SimpleTree {
     
     /// Traverse the children from the current node to find the first child (grandchild, etc.) with the specified value.
     /// Traversal is breadth-first.
-    public func getFirstChild(forValue value: T) -> Node? {
+    public func getFirstChild(for value: T) -> Node? {
         let iter = self.makeChildIterator()
         while let node = iter.next() {
             if node.value == value {
@@ -160,38 +182,12 @@ extension SimpleTree {
         return nil
     }
     
-    /// Traverse from the current node to find the first node with the specified value. Includes current node.
+    /// Traverse from the current node to find the first node with the specified value.
+    /// Includes current node.
     /// Traversal is breadth-first.
-    public func getFirst(forValue value: T) -> Node? {
+    public func getFirst(for value: T) -> Node? {
         guard self.value != value else { return self }
-        return getFirstChild(forValue: value)
-    }
-}
-
-// MARK: - Iterative Node Retrieval
-
-extension SimpleTree {
-    
-    /// Get all the child nodes from the current node.
-    /// Optional list of values for children to be excluded, along with their progeny.
-    /// Traversal is breadth-first.
-    public func getAllChildren(excludeValues: ValueSet = ValueSet()) -> [Node] {
-        var nodes = [Node]()
-        let iter = self.makeChildIterator(excludeValues: excludeValues)
-        while let node = iter.next() {
-            nodes.append(node)
-        }
-        return nodes
-    }
-    
-    /// Flatten tree from current node. Includes current node.
-    /// Optional list of values for children to be excluded, along with their progeny.
-    /// Traversal is breadth-first.
-    public func getAll(excludeValues: ValueSet = ValueSet()) -> [Node] {
-        guard !excludeValues.contains(self.value) else { return [] }
-        var nodes: [Node] = [self]
-        nodes.append(contentsOf: getAllChildren(excludeValues: excludeValues))
-        return nodes
+        return getFirstChild(for: value)
     }
 }
 
@@ -212,21 +208,21 @@ extension SimpleTree {
         getParent(excludeValues: excludeValues)?.value
     }
     
-    /// Fetch child values.
+    /// Fetch the values of the child nodes.
     /// Optional list of values for children to be excluded, along with their progeny.
     /// Traversal is depth-first, with optional limit.
-    public func getChildValues(maxDepth: Int = Int.max, excludeValues: ValueSet = ValueSet()) -> [T] {
+    public func getChildValues(maxDepth: Int, excludeValues: ValueSet = ValueSet()) -> [T] {
         getChildren(maxDepth: maxDepth, excludeValues: excludeValues).map(\.value)
     }
 
-    /// Get all the child values from the current node.
+    /// Fetch the values of the child nodes.
     /// Optional list of values for children to be excluded, along with their progeny.
     /// Traversal is breadth-first.
-    public func getAllChildValues(excludeValues: ValueSet = ValueSet()) -> [T] {
-        getAllChildren(excludeValues: excludeValues).map(\.value)
+    public func getChildValues(excludeValues: ValueSet = ValueSet()) -> [T] {
+        getChildren(excludeValues: excludeValues).map(\.value)
     }
     
-    /// Flatten tree from current node. Includes value of current node.
+    /// Fetch values for the node and its child nodes.
     /// Optional list of values for children to be excluded, along with their progeny.
     /// Traversal is breadth-first.
     public func getAllValues(excludeValues: ValueSet = ValueSet()) -> [T] {

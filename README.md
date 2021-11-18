@@ -10,10 +10,10 @@ _SwiftSimpleTree_ is part of the [OpenAlloc](https://github.com/openalloc) famil
 
 ```swift
 let foo = SimpleTree<String>(value: "foo")
-let bar = foo.addChild(forValue: "bar")
-let baz = bar.addChild(forValue: "baz")
+let bar = foo.addChild(for: "bar")
+let baz = bar.addChild(for: "baz")
 
-print(foo.getFirst(forValue: "baz")?.value)
+print(foo.getFirst(for: "baz")?.value)
 
 => "baz"
 
@@ -28,6 +28,8 @@ print(foo.getAllChildValues())
 
 ## Types
 
+Types scoped within `SimpleTree`:
+
 - `typealias Node = SimpleTree<T>` - a tree node, where `T` is your hashable type.
 
 - `typealias ValueSet = Set<T>` - a set of values, where `T` is your hashable type.
@@ -38,15 +40,25 @@ print(foo.getAllChildValues())
 
 - `init(value: T)`: Initialize a new tree (containing the specified value at the root)
 
-- `func addChild(forValue: T) -> Node`: Append a new node (containing the specified value) to our list of children
+- `func addChild(for: T) -> Node`: Append a new node (containing the specified value) to our list of children
 
 #### Node Retrieval
+
+- `func getChildren(excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+
+- `func getChildren(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first, with optional limit.
 
 - `func getParent(excludeValues: ValueSet) -> Node?`: Return the immediate parent node, if any. Optional list of parent values to be excluded. A match will cause this function to return nil.
 
 - `func getParents(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Return the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
 
-- `func getChildren(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Fetch child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first, with optional limit.
+- `func getAll(excludeValues: ValueSet) -> [Node]`: Fetch the node and its child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+
+#### Node Search
+
+- `func getFirst(for: T) -> Node?`: Traverse from the current node to find the first node with the specified value. Traversal is breadth-first.
+
+- `func getFirstChild(for: T) -> Node?`: Traverse the children from the current node to find the first child (grandchild, etc.) with the specified value. Traversal is breadth-first.
 
 #### Iterators
 
@@ -54,29 +66,17 @@ print(foo.getAllChildValues())
 
 - `func makeParentIterator() -> AnyIterator<Node>`: Create a iterator to traverse up the tree through the parents of the current node, starting with the most recent parent, if any.
 
-#### Iterative Node Search
-
-- `func getFirst(forValue: T) -> Node?`: Traverse from the current node to find the first node with the specified value. Includes current node. Traversal is breadth-first.
-
-- `func getFirstChild(forValue: T) -> Node?`: Traverse the children from the current node to find the first child (grandchild, etc.) with the specified value. Traversal is breadth-first.
-
-#### Iterative Node Retrieval
-
-- `func getAll(excludeValues: ValueSet) -> [Node]`: Flatten tree from current node. Includes current node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
-
-- `func getAllChildren(excludeValues: ValueSet) -> [Node]`: Get all the child nodes from the current node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
-
 #### Value retrieval
 
-- `func getAllChildValues(excludeValues: ValueSet) -> [T]`: Get all the child values from the current node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+- `func getChildValues(excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
 
-- `func getAllValues(excludeValues: ValueSet) -> [T]`: Flatten tree from current node. Includes value of current node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
-
-- `func getChildValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Fetch child values. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first, with optional limit.
+- `func getChildValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first, with optional limit.
 
 - `func getParentValue(excludeValues: ValueSet) -> T?`: Return the value of the immediate parent node, if any. Optional list of parent values to be excluded. A match will cause this function to return nil.
 
 - `func getParentValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Return the values of the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
+
+- `func getAllValues(excludeValues: ValueSet) -> [T]`: Fetch values for the node and its child nodes. Includes value of current node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
 
 ## See Also
 
