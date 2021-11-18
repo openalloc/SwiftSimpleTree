@@ -76,7 +76,7 @@ extension SimpleTree {
     
     /// Fetch the child nodes of the node.
     /// Optional list of values for children to be excluded, along with their progeny.
-    /// Traversal is depth-first, with optional limit.
+    /// Traversal is depth-first.
     public func getChildren(maxDepth: Int, excludeValues: ValueSet = ValueSet()) -> [Node] {
         guard maxDepth > 0 else { return [] }
         var nodes = [Node]()
@@ -210,7 +210,7 @@ extension SimpleTree {
     
     /// Fetch the values of the child nodes.
     /// Optional list of values for children to be excluded, along with their progeny.
-    /// Traversal is depth-first, with optional limit.
+    /// Traversal is depth-first.
     public func getChildValues(maxDepth: Int, excludeValues: ValueSet = ValueSet()) -> [T] {
         getChildren(maxDepth: maxDepth, excludeValues: excludeValues).map(\.value)
     }

@@ -46,7 +46,7 @@ Types scoped within `SimpleTree`:
 
 - `func getChildren(excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
 
-- `func getChildren(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first, with optional limit.
+- `func getChildren(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first.
 
 - `func getParent(excludeValues: ValueSet) -> Node?`: Return the immediate parent node, if any. Optional list of parent values to be excluded. A match will cause this function to return nil.
 
@@ -70,7 +70,7 @@ Types scoped within `SimpleTree`:
 
 - `func getChildValues(excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
 
-- `func getChildValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first, with optional limit.
+- `func getChildValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first.
 
 - `func getParentValue(excludeValues: ValueSet) -> T?`: Return the value of the immediate parent node, if any. Optional list of parent values to be excluded. A match will cause this function to return nil.
 
