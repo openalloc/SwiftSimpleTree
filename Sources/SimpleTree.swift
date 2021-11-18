@@ -103,9 +103,9 @@ extension SimpleTree {
     }
     
     /// Fetch the node and its child nodes.
-    /// Optional list of values for children to be excluded, along with their progeny.
+    /// Optional list of values for nodes to be excluded, along with their progeny.
     /// Traversal is breadth-first.
-    public func getAll(excludeValues: ValueSet = ValueSet()) -> [Node] {
+    public func getSelfAndChildren(excludeValues: ValueSet = ValueSet()) -> [Node] {
         guard !excludeValues.contains(self.value) else { return [] }
         var nodes: [Node] = [self]
         nodes.append(contentsOf: getChildren(excludeValues: excludeValues))
@@ -223,9 +223,9 @@ extension SimpleTree {
     }
     
     /// Fetch values for the node and its child nodes.
-    /// Optional list of values for children to be excluded, along with their progeny.
+    /// Optional list of values for nodes to be excluded, along with their progeny.
     /// Traversal is breadth-first.
-    public func getAllValues(excludeValues: ValueSet = ValueSet()) -> [T] {
-        getAll(excludeValues: excludeValues).map(\.value)
+    public func getSelfAndChildValues(excludeValues: ValueSet = ValueSet()) -> [T] {
+        getSelfAndChildren(excludeValues: excludeValues).map(\.value)
     }
 }

@@ -232,27 +232,27 @@ class SimpleTreeTests: XCTestCase {
         let bar = foo.addChild(for: "bar")
         let baz = bar.addChild(for: "baz")
 
-        XCTAssertTrue(foo.getAllValues().contains("foo"))
-        XCTAssertTrue(foo.getAllValues().contains("bar"))
-        XCTAssertTrue(foo.getAllValues().contains("baz"))
-        XCTAssertFalse(foo.getAllValues().contains("blah"))
+        XCTAssertTrue(foo.getSelfAndChildValues().contains("foo"))
+        XCTAssertTrue(foo.getSelfAndChildValues().contains("bar"))
+        XCTAssertTrue(foo.getSelfAndChildValues().contains("baz"))
+        XCTAssertFalse(foo.getSelfAndChildValues().contains("blah"))
 
-        XCTAssertFalse(bar.getAllValues().contains("foo"))
-        XCTAssertTrue(bar.getAllValues().contains("bar"))
-        XCTAssertTrue(bar.getAllValues().contains("baz"))
-        XCTAssertFalse(bar.getAllValues().contains("blah"))
+        XCTAssertFalse(bar.getSelfAndChildValues().contains("foo"))
+        XCTAssertTrue(bar.getSelfAndChildValues().contains("bar"))
+        XCTAssertTrue(bar.getSelfAndChildValues().contains("baz"))
+        XCTAssertFalse(bar.getSelfAndChildValues().contains("blah"))
 
-        XCTAssertFalse(baz.getAllValues().contains("foo"))
-        XCTAssertFalse(baz.getAllValues().contains("bar"))
-        XCTAssertTrue(baz.getAllValues().contains("baz"))
-        XCTAssertFalse(baz.getAllValues().contains("blah"))
+        XCTAssertFalse(baz.getSelfAndChildValues().contains("foo"))
+        XCTAssertFalse(baz.getSelfAndChildValues().contains("bar"))
+        XCTAssertTrue(baz.getSelfAndChildValues().contains("baz"))
+        XCTAssertFalse(baz.getSelfAndChildValues().contains("blah"))
     }
     
     public func testGetAllValuesExcludeRoot() throws {
         let foo = SimpleTree<String>(value: "foo")
         _ = foo.addChild(for: "bar")
 
-        let actual = foo.getAllValues(excludeValues: Set(["foo"]))
+        let actual = foo.getSelfAndChildValues(excludeValues: Set(["foo"]))
         XCTAssertFalse(actual.contains("foo"))
         XCTAssertFalse(actual.contains("bar"))
     }
@@ -262,7 +262,7 @@ class SimpleTreeTests: XCTestCase {
         let bar = foo.addChild(for: "bar")
         _ = bar.addChild(for: "baz")
 
-        let actual = foo.getAllValues(excludeValues: Set(["bar"]))
+        let actual = foo.getSelfAndChildValues(excludeValues: Set(["bar"]))
         XCTAssertTrue(actual.contains("foo"))
         XCTAssertFalse(actual.contains("bar"))
     }
@@ -276,7 +276,7 @@ class SimpleTreeTests: XCTestCase {
         let bar = foo.addChild(for: "bar")
         _ = bar.addChild(for: "baz")
 
-        let actual = foo.getAllValues(excludeValues: Set(["blah"]))
+        let actual = foo.getSelfAndChildValues(excludeValues: Set(["blah"]))
         XCTAssertTrue(actual.contains("foo"))
         XCTAssertFalse(actual.contains("blah"))
         XCTAssertFalse(actual.contains("bleh"))

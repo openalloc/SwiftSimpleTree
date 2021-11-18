@@ -52,7 +52,7 @@ Types scoped within `SimpleTree`:
 
 - `func getParents(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Return the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
 
-- `func getAll(excludeValues: ValueSet) -> [Node]`: Fetch the node and its child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+- `func getSelfAndChildren(excludeValues: ValueSet) -> [Node]`: Fetch the node and its child nodes. Optional list of values for nodes to be excluded, along with their progeny. Traversal is breadth-first.
 
 #### Node Search
 
@@ -76,7 +76,7 @@ Types scoped within `SimpleTree`:
 
 - `func getParentValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Return the values of the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
 
-- `func getAllValues(excludeValues: ValueSet) -> [T]`: Fetch values for the node and its child nodes. Includes value of current node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+- `func getSelfAndChildValues(excludeValues: ValueSet) -> [T]`: Fetch values for the node and its child nodes. Includes value of current node. Optional list of values for nodes to be excluded, along with their progeny. Traversal is breadth-first.
 
 ## See Also
 
