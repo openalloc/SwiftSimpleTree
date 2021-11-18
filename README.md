@@ -21,7 +21,7 @@ print(baz.getParentValues())
 
 => ["bar", "foo"]
 
-print(foo.getAllChildValues())
+print(foo.getChildValues())
 
 => ["bar", "baz"]
 ```
