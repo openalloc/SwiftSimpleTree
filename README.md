@@ -9,7 +9,7 @@ _SwiftSimpleTree_ is part of the [OpenAlloc](https://github.com/openalloc) famil
 ## SimpleTree
 
 ```swift
-let foo = SimpleTree<String>(value: "foo")
+let foo = SimpleTree(value: "foo")
 let bar = foo.addChild(for: "bar")
 let baz = bar.addChild(for: "baz")
 
@@ -24,6 +24,10 @@ print(baz.getParentValues())
 print(foo.getChildValues())
 
 => ["bar", "baz"]
+
+print(foo.getSelfAndChildValues())
+
+=> ["foo", "bar", "baz"]
 ```
 
 ## Types
@@ -33,6 +37,15 @@ Types scoped within `SimpleTree`:
 - `typealias Node = SimpleTree<T>` - a tree node, where `T` is your hashable type.
 
 - `typealias ValueSet = Set<T>` - a set of values, where `T` is your hashable type.
+
+An enumeration is used for the `traversal` argument in the `getChildren()` methods:
+
+```swift
+public enum Traversal {
+    case depthFirst
+    case breadthFirst
+}
+```
 
 ## Instance Methods
 
@@ -44,15 +57,13 @@ Types scoped within `SimpleTree`:
 
 #### Node Retrieval
 
-- `func getChildren(excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+- `func getChildren(traversal: Traversal, maxDepth: UInt, excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is `.breadthFirst` by default. NOTE: breadth-first with `maxDepth` not yet supported.
 
-- `func getChildren(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Fetch the child nodes of the node. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first.
+- `func getSelfAndChildren(traversal: Traversal, maxDepth: UInt, excludeValues: ValueSet) -> [Node]`: Fetch the node and its child nodes. Optional list of values for nodes to be excluded, along with their progeny. Traversal is `.breadthFirst` by default. Self is at the first level of depth, so `maxDepth: 0` returns `[]`. NOTE: breadth-first with `maxDepth` not yet supported.
 
 - `func getParent(excludeValues: ValueSet) -> Node?`: Return the immediate parent node, if any. Optional list of parent values to be excluded. A match will cause this function to return nil.
 
-- `func getParents(maxDepth: Int, excludeValues: ValueSet) -> [Node]`: Return the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
-
-- `func getSelfAndChildren(excludeValues: ValueSet) -> [Node]`: Fetch the node and its child nodes. Optional list of values for nodes to be excluded, along with their progeny. Traversal is breadth-first.
+- `func getParents(maxDepth: UInt, excludeValues: ValueSet) -> [Node]`: Return the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
 
 #### Node Search
 
@@ -68,15 +79,14 @@ Types scoped within `SimpleTree`:
 
 #### Value retrieval
 
-- `func getChildValues(excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is breadth-first.
+- `func getChildValues(traversal: Traversal, maxDepth: UInt, excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is `.breadthFirst` by default. NOTE: breadth-first with `maxDepth` not yet supported.
 
-- `func getChildValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Fetch the values of the child nodes. Optional list of values for children to be excluded, along with their progeny. Traversal is depth-first.
+- `func getSelfAndChildValues(excludeValues: ValueSet) -> [T]`: Fetch values for the node and its child nodes. Includes value of current node. Optional list of values for nodes to be excluded, along with their progeny. Self is at the first level of depth, so `maxDepth: 0` returns `[]`. Traversal is breadth-first, by default. NOTE: breadth-first with `maxDepth` not yet supported.
 
 - `func getParentValue(excludeValues: ValueSet) -> T?`: Return the value of the immediate parent node, if any. Optional list of parent values to be excluded. A match will cause this function to return nil.
 
-- `func getParentValues(maxDepth: Int, excludeValues: ValueSet) -> [T]`: Return the values of the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
+- `func getParentValues(maxDepth: UInt, excludeValues: ValueSet) -> [T]`: Return the values of the parent nodes, starting with immediate parent. Optional list of parent values to be excluded. A match will exclude further ancestors. Optional limit on depth.
 
-- `func getSelfAndChildValues(excludeValues: ValueSet) -> [T]`: Fetch values for the node and its child nodes. Includes value of current node. Optional list of values for nodes to be excluded, along with their progeny. Traversal is breadth-first.
 
 ## See Also
 
