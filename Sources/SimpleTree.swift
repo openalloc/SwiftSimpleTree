@@ -37,7 +37,7 @@ public class SimpleTree<T> where T: Equatable & Hashable {
 extension SimpleTree {
     
     /// Append a new node (containing the specified value) to our list of children
-    public func addChild(for value: T) -> Node {
+    public func addChild(value: T) -> Node {
         let nuChild = Node(value: value)
         children.append(nuChild)
         nuChild.parent = self

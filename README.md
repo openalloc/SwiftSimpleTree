@@ -10,8 +10,8 @@ _SwiftSimpleTree_ is part of the [OpenAlloc](https://github.com/openalloc) famil
 
 ```swift
 let foo = SimpleTree(value: "foo")
-let bar = foo.addChild(for: "bar")
-let baz = bar.addChild(for: "baz")
+let bar = foo.addChild(value: "bar")
+let baz = bar.addChild(value: "baz")
 
 print(foo.getFirst(for: "baz")?.value)
 
@@ -53,7 +53,7 @@ public enum Traversal {
 
 - `init(value: T)`: Initialize a new tree (containing the specified value at the root)
 
-- `func addChild(for: T) -> Node`: Append a new node (containing the specified value) to our list of children
+- `func addChild(value: T) -> Node`: Append a new node (containing the specified value) to our list of children
 
 #### Node Retrieval
 
