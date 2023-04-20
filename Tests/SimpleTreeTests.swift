@@ -27,9 +27,8 @@ extension SimpleTree: Equatable {
 }
 
 final class SimpleTreeTests: XCTestCase {
-   
     typealias SST = SimpleTree<String>
-    
+
     public func testExample() {
         let foo = SimpleTree(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -40,7 +39,7 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertEqual(["bar", "baz"], foo.getChildValues())
         XCTAssertEqual(["foo", "bar", "baz"], foo.getSelfAndChildValues())
     }
-    
+
     public func testGetParentValues() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -66,7 +65,7 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertEqual(baz2.getParentValue(), "foo")
         XCTAssertEqual(baz.getParentValue(), "bar")
     }
-    
+
     public func testMakeParentIterator() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -78,11 +77,11 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertEqual("bar", blahIt.next()?.value)
         XCTAssertEqual("foo", blahIt.next()?.value)
         XCTAssertNil(blahIt.next()?.value)
-        
+
         let baz2It = baz2.makeParentIterator()
         XCTAssertEqual("foo", baz2It.next()?.value)
         XCTAssertNil(baz2It.next()?.value)
-        
+
         let bazIt = baz.makeParentIterator()
         XCTAssertEqual("bar", bazIt.next()?.value)
         XCTAssertEqual("foo", bazIt.next()?.value)
@@ -107,19 +106,19 @@ final class SimpleTreeTests: XCTestCase {
 
         let blahIt = blah.makeChildIterator()
         XCTAssertNil(blahIt.next()?.value)
-        
+
         let baz2It = baz2.makeChildIterator()
         XCTAssertEqual("bleep", baz2It.next()?.value)
         XCTAssertEqual("blort", baz2It.next()?.value)
         XCTAssertNil(baz2It.next()?.value)
-  
+
         let bleepIt = bleep.makeChildIterator()
         XCTAssertEqual("blort", bleepIt.next()?.value)
         XCTAssertNil(bleepIt.next()?.value)
 
         let blortIt = blort.makeChildIterator()
         XCTAssertNil(blortIt.next()?.value)
-        
+
         let bazIt = baz.makeChildIterator()
         XCTAssertNil(bazIt.next()?.value)
 
@@ -158,13 +157,13 @@ final class SimpleTreeTests: XCTestCase {
         let foo = SST(value: "foo")
         XCTAssertEqual(foo.getChildValues(), [])
     }
-    
+
     public func testGetChildValuesOneChild() throws {
         let foo = SST(value: "foo")
         _ = foo.addChild(value: "bar")
         XCTAssertEqual(foo.getChildValues(), ["bar"])
     }
-    
+
     public func testGetChildValuesOneGrandChild() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -188,14 +187,14 @@ final class SimpleTreeTests: XCTestCase {
             XCTAssertEqual(baz.getChildValues(traversal: traversal), [])
             XCTAssertEqual(blah.getChildValues(traversal: traversal), ["bleh"])
         }
-        
+
         XCTAssertEqual(foo.getChildValues(traversal: .depthFirst, maxDepth: 1000).sorted(), ["bar", "bar2", "bar3", "baz", "blah", "bleh"].sorted())
         XCTAssertEqual(foo.getChildValues(traversal: .depthFirst, maxDepth: 3).sorted(), ["bar", "bar2", "bar3", "baz", "blah", "bleh"].sorted())
         XCTAssertEqual(foo.getChildValues(traversal: .depthFirst, maxDepth: 2).sorted(), ["bar", "bar2", "bar3", "baz", "blah"].sorted())
         XCTAssertEqual(foo.getChildValues(traversal: .depthFirst, maxDepth: 1).sorted(), ["bar", "bar2"].sorted())
         XCTAssertEqual(foo.getChildValues(traversal: .depthFirst, maxDepth: 0).sorted(), [].sorted())
     }
-    
+
     public func testGetSelfAndChildValues() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -219,7 +218,7 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertEqual(foo.getSelfAndChildValues(traversal: .depthFirst, maxDepth: 1).sorted(), ["foo"].sorted())
         XCTAssertEqual(foo.getSelfAndChildValues(traversal: .depthFirst, maxDepth: 0).sorted(), [].sorted())
     }
-    
+
     public func testGetAllChildValues() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -249,7 +248,7 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertEqual(bar.getChildValues(excludeValues: ["foo"]).sorted(), ["baz", "blah"].sorted())
         XCTAssertEqual(bar.getChildValues(excludeValues: ["blah"]).sorted(), ["baz"].sorted())
     }
-    
+
     public func testGetChildValues2Exclude() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -258,7 +257,7 @@ final class SimpleTreeTests: XCTestCase {
         _ = bar.addChild(value: "baz")
         _ = bar.addChild(value: "blah")
 
-        //XCTAssertEqual(foo.getChildValues2(excludeValues: ["bar"]), [])
+        // XCTAssertEqual(foo.getChildValues2(excludeValues: ["bar"]), [])
         XCTAssertEqual(foo.getChildValues(excludeValues: ["bar2"]), ["bar", "baz", "blah"])
         XCTAssertEqual(foo.getChildValues(excludeValues: ["blah"]), ["bar", "bar2", "baz", "bar3"])
         XCTAssertEqual(bar.getChildValues(excludeValues: ["foo"]), ["baz", "blah"])
@@ -285,7 +284,7 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertTrue(baz.getSelfAndChildValues().contains("baz"))
         XCTAssertFalse(baz.getSelfAndChildValues().contains("blah"))
     }
-    
+
     public func testGetAllValuesExcludeRoot() throws {
         let foo = SST(value: "foo")
         _ = foo.addChild(value: "bar")
@@ -294,7 +293,7 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertFalse(actual.contains("foo"))
         XCTAssertFalse(actual.contains("bar"))
     }
-    
+
     public func testGetAllValuesExcludeChild() throws {
         let foo = SST(value: "foo")
         let bar = foo.addChild(value: "bar")
@@ -304,13 +303,13 @@ final class SimpleTreeTests: XCTestCase {
         XCTAssertTrue(actual.contains("foo"))
         XCTAssertFalse(actual.contains("bar"))
     }
-    
+
     public func testGetAllValuesExcludeSibling() throws {
         let foo = SST(value: "foo")
-        
+
         let blah = foo.addChild(value: "blah")
         _ = blah.addChild(value: "bleh")
-        
+
         let bar = foo.addChild(value: "bar")
         _ = bar.addChild(value: "baz")
 

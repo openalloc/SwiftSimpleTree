@@ -19,10 +19,9 @@
 import Foundation
 
 public class SimpleTree<T> where T: Equatable & Hashable {
-    
     public typealias Node = SimpleTree<T>
     public typealias ValueSet = Set<T>
-    
+
     public var value: T
     private(set) var children: [Node] = []
     private(set) var parent: Node?
@@ -34,34 +33,32 @@ public class SimpleTree<T> where T: Equatable & Hashable {
 
 // MARK: - Tree Maintenance
 
-extension SimpleTree {
-    
+public extension SimpleTree {
     /// Append a new node (containing the specified value) to our list of children
-    public func addChild(value: T) -> Node {
+    func addChild(value: T) -> Node {
         let nuChild = Node(value: value)
         children.append(nuChild)
         nuChild.parent = self
         return nuChild
     }
-    
-    // TODO need removeChild() which will also deal with grandchildren, etc.
+
+    // TODO: need removeChild() which will also deal with grandchildren, etc.
 }
 
 // MARK: - Node Retrieval
 
-extension SimpleTree {
-    
-    public enum Traversal {
+public extension SimpleTree {
+    enum Traversal {
         case depthFirst
         case breadthFirst
     }
-    
+
     /// Return the parent nodes, starting with immediate parent.
     /// Optional list of parent values to be excluded. A match will exclude further ancestors.
     /// Optional limit on depth.
-    public func getParents(maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
+    func getParents(maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
         guard maxDepth > 0 else { return [] }
-        let iter = self.makeParentIterator()
+        let iter = makeParentIterator()
         var depth = maxDepth
         var parents = [Node]()
         while let parentNode = iter.next() {
@@ -72,18 +69,18 @@ extension SimpleTree {
         }
         return parents
     }
-    
+
     /// Return the immediate parent node, if any.
     /// Optional list of parent values to be excluded. A match will cause this function to return nil.
-    public func getParent(excludeValues: ValueSet = ValueSet()) -> Node? {
+    func getParent(excludeValues: ValueSet = ValueSet()) -> Node? {
         getParents(maxDepth: 1, excludeValues: excludeValues).first
     }
-    
+
     /// Fetch the child nodes of the node.
     /// Optional list of values for children to be excluded, along with their progeny.
     /// Traversal is breadth-first by default.
     /// NOTE: breadth-first with maxDepth not yet supported.
-    public func getChildren(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
+    func getChildren(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
         var nodes = [Node]()
         switch traversal {
         case .depthFirst:
@@ -99,48 +96,47 @@ extension SimpleTree {
             }
         case .breadthFirst:
             guard maxDepth == UInt.max else { fatalError("breadth-first with maxDepth not yet supported") }
-            let iter = self.makeChildIterator(excludeValues: excludeValues)
+            let iter = makeChildIterator(excludeValues: excludeValues)
             while let node = iter.next() {
                 nodes.append(node)
             }
         }
         return nodes
     }
-    
+
     /// Fetch the node and its child nodes.
     /// Optional list of values for nodes to be excluded, along with their progeny.
     /// Traversal is breadth-first by default.
     /// Self is at the first level of depth, so maxDepth: 0 returns [].
     /// NOTE: breadth-first with maxDepth not yet supported.
-    public func getSelfAndChildren(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
-        guard !excludeValues.contains(self.value), maxDepth > 0 else { return [] }
+    func getSelfAndChildren(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [Node] {
+        guard !excludeValues.contains(value), maxDepth > 0 else { return [] }
         var nodes: [Node] = [self]
         let netMaxDepth = maxDepth - (traversal == .depthFirst ? 1 : 0)
         nodes.append(contentsOf: getChildren(traversal: traversal, maxDepth: netMaxDepth, excludeValues: excludeValues))
         return nodes
     }
 }
-    
+
 // MARK: - Iterators
 
-extension SimpleTree {
-    
+public extension SimpleTree {
     /// Create a iterator to traverse up the tree through the parents of the current node, starting with the most recent parent, if any.
-    public func makeParentIterator() -> AnyIterator<Node> {
-        var node: Node? = self.parent
+    func makeParentIterator() -> AnyIterator<Node> {
+        var node: Node? = parent
         return AnyIterator { () -> Node? in
             guard let _node = node else { return nil }
             let nextNode = _node
-            node = _node.parent        // okay if nil
+            node = _node.parent // okay if nil
             return nextNode
         }
     }
-    
+
     /// Create a iterator to traverse through the children (grandchildren, etc.) of the current node.
     /// Traversal is breadth-first.
     /// With short circuit of child branches on exclude filter.
-    public func makeChildIterator(excludeValues: ValueSet = ValueSet()) -> AnyIterator<Node> {
-        var stack = self.children
+    func makeChildIterator(excludeValues: ValueSet = ValueSet()) -> AnyIterator<Node> {
+        var stack = children
         var node: Node? = stack.isEmpty ? nil : stack.removeFirst()
         return AnyIterator { () -> Node? in
             guard node != nil else { return nil }
@@ -151,7 +147,8 @@ extension SimpleTree {
             while node != nil {
                 nextNode = node
                 if let cv = nextNode?.value,
-                   excludeValues.contains(cv) {
+                   excludeValues.contains(cv)
+                {
                     node = stack.isEmpty ? nil : stack.removeFirst()
                     nextNode = nil
                     continue
@@ -168,20 +165,19 @@ extension SimpleTree {
             } else {
                 node = stack.removeFirst()
             }
-            
+
             return nextNode
         }
     }
 }
- 
+
 // MARK: - Node Search
 
-extension SimpleTree {
-    
+public extension SimpleTree {
     /// Traverse the children from the current node to find the first child (grandchild, etc.) with the specified value.
     /// Traversal is breadth-first.
-    public func getFirstChild(for value: T) -> Node? {
-        let iter = self.makeChildIterator()
+    func getFirstChild(for value: T) -> Node? {
+        let iter = makeChildIterator()
         while let node = iter.next() {
             if node.value == value {
                 return node
@@ -189,11 +185,11 @@ extension SimpleTree {
         }
         return nil
     }
-    
+
     /// Traverse from the current node to find the first node with the specified value.
     /// Includes current node.
     /// Traversal is breadth-first.
-    public func getFirst(for value: T) -> Node? {
+    func getFirst(for value: T) -> Node? {
         guard self.value != value else { return self }
         return getFirstChild(for: value)
     }
@@ -201,13 +197,12 @@ extension SimpleTree {
 
 // MARK: - Value retrieval
 
-extension SimpleTree {
-    
+public extension SimpleTree {
     /// Fetch the values of the child nodes.
     /// Optional list of values for children to be excluded, along with their progeny.
     /// Traversal is breadth-first by default.
     /// NOTE: breadth-first with maxDepth not yet supported.
-    public func getChildValues(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [T] {
+    func getChildValues(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [T] {
         getChildren(traversal: traversal, maxDepth: maxDepth, excludeValues: excludeValues).map(\.value)
     }
 
@@ -217,20 +212,20 @@ extension SimpleTree {
     /// Self is at the first level of depth, so maxDepth: 0 returns [].
     /// Traversal is breadth-first, by default.
     /// NOTE: breadth-first with maxDepth not yet supported.
-    public func getSelfAndChildValues(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [T] {
+    func getSelfAndChildValues(traversal: Traversal = .breadthFirst, maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [T] {
         getSelfAndChildren(traversal: traversal, maxDepth: maxDepth, excludeValues: excludeValues).map(\.value)
     }
 
     /// Return the values of the parent nodes, starting with immediate parent.
     /// Optional list of parent values to be excluded. A match will exclude further ancestors.
     /// Optional limit on depth.
-    public func getParentValues(maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [T] {
+    func getParentValues(maxDepth: UInt = UInt.max, excludeValues: ValueSet = ValueSet()) -> [T] {
         getParents(maxDepth: maxDepth, excludeValues: excludeValues).map(\.value)
     }
-    
+
     /// Return the value of the immediate parent node, if any.
     /// Optional list of parent values to be excluded. A match will cause this function to return nil.
-    public func getParentValue(excludeValues: ValueSet = ValueSet()) -> T? {
+    func getParentValue(excludeValues: ValueSet = ValueSet()) -> T? {
         getParent(excludeValues: excludeValues)?.value
     }
 }
